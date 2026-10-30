@@ -11,8 +11,8 @@ Streamlit e gráficos em Matplotlib.
 
 Esta etapa contém a estrutura inicial, a configuração das dependências, o
 modelo `Ocorrencia` com validações, o carregamento de arquivos CSV, o algoritmo
-de Par de Pontos Mais Próximos e a interface pelo terminal. A interface gráfica
-será implementada nas próximas etapas.
+de Par de Pontos Mais Próximos, a interface pelo terminal e a visualização com
+Matplotlib. A interface com Streamlit será implementada nas próximas etapas.
 
 ## Requisitos e instalação
 
@@ -41,12 +41,14 @@ src/pontoalerta/
     ocorrencia.py           # Modelo e validações dos registros
     leitura_csv.py          # Carregamento e validação do CSV
     par_proximo.py          # Algoritmo de divisão e conquista
+    visualizacao.py         # Gráfico cartesiano e destaque do par mais próximo
 tests/
     test_cli.py
     test_distancia.py
     test_ocorrencia.py
     test_leitura_csv.py
     test_par_proximo.py
+    test_visualizacao.py
 pyproject.toml              # Pacote, dependências e configuração do Pytest
 ```
 
@@ -136,6 +138,40 @@ Consulte `pontoalerta --help` para ver os argumentos. O programa retorna código
 `0` em caso de sucesso, `1` para erros de arquivo ou dados (exibidos em stderr)
 e `2` para argumentos ausentes ou incorretos. Se o pacote já estava instalado
 antes da adição deste comando, execute novamente `python -m pip install -e ".[dev]"`.
+
+## Visualização gráfica
+
+Use `--grafico` para salvar um gráfico da categoria analisada:
+
+```bash
+pontoalerta data/ocorrencias_exemplo.csv -c "buraco" --grafico buracos.png
+```
+
+Abra a imagem gerada para visualizar as ocorrências no plano cartesiano. Os
+pontos aparecem em azul; o par mais próximo é destacado com estrelas vermelhas,
+IDs e uma linha tracejada. O título informa a categoria e a distância mínima.
+Os eixos X e Y usam a mesma escala para preservar as proporções das distâncias.
+Pontos coincidentes recebem os dois IDs em posições diferentes.
+
+O gráfico inclui apenas a categoria selecionada. O formato do arquivo é definido
+pela extensão, como `.png`, `.svg` ou `.pdf`; a pasta de destino deve existir.
+A geração do arquivo funciona sem abrir uma janela gráfica.
+
+Também é possível criar uma figura Matplotlib para uso em Python:
+
+```python
+from pontoalerta import (
+    carregar_ocorrencias_csv,
+    criar_grafico_ocorrencias,
+    par_mais_proximo,
+)
+
+ocorrencias = carregar_ocorrencias_csv("data/ocorrencias_exemplo.csv")
+selecionadas = [p for p in ocorrencias if p.tipo == "buraco"]
+resultado = par_mais_proximo(selecionadas)
+figura = criar_grafico_ocorrencias(selecionadas, resultado)
+figura.savefig("buracos.png")
+```
 
 ## Testes
 

@@ -110,3 +110,34 @@ def test_exibe_ajuda(capsys):
     assert "--categoria" in saida.out
     assert "arquivo" in saida.out
     assert saida.err == ""
+
+
+def test_salva_grafico_da_categoria_selecionada(caminho_csv, tmp_path, capsys, monkeypatch):
+    from pontoalerta import cli
+
+    criar_grafico = cli.criar_grafico_ocorrencias
+    pontos_plotados = []
+
+    def capturar_ocorrencias(ocorrencias, resultado):
+        pontos_plotados.extend(ocorrencias)
+        return criar_grafico(ocorrencias, resultado)
+
+    monkeypatch.setattr(cli, "criar_grafico_ocorrencias", capturar_ocorrencias)
+    destino = tmp_path / "grafico de buracos.png"
+
+    assert main([str(caminho_csv), "-c", "buraco", "--grafico", str(destino)]) == 0
+
+    assert [p.id for p in pontos_plotados] == ["001", "002"]
+    assert destino.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+    assert "Distância: 5.0" in capsys.readouterr().out
+
+
+def test_informa_erro_quando_nao_consegue_salvar_grafico(caminho_csv, tmp_path, capsys):
+    destino = tmp_path / "pasta_inexistente" / "grafico.png"
+
+    assert main([str(caminho_csv), "-c", "buraco", "--grafico", str(destino)]) == 1
+
+    saida = capsys.readouterr()
+    assert saida.out == ""
+    assert "Erro:" in saida.err
+    assert "Traceback" not in saida.err

@@ -12,11 +12,13 @@ from .par_proximo import (
     par_mais_proximo_faixa,
     par_mais_proximo_forca_bruta,
 )
+from .visualizacao import criar_grafico_ocorrencias
 
 __all__ = [
     "Ocorrencia",
     "ParMaisProximo",
     "carregar_ocorrencias_csv",
+    "criar_grafico_ocorrencias",
     "distancia_euclidiana",
     "dividir_ordenado_y",
     "dividir_pontos",
