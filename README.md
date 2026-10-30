@@ -10,8 +10,9 @@ Streamlit e gráficos em Matplotlib.
 ## Estado atual
 
 Esta etapa contém a estrutura inicial, a configuração das dependências, o
-modelo `Ocorrencia` com validações e o carregamento de arquivos CSV. O algoritmo
-e a interface serão implementados nas próximas etapas.
+modelo `Ocorrencia` com validações, o carregamento de arquivos CSV, o algoritmo
+de Par de Pontos Mais Próximos e a interface pelo terminal. A interface gráfica
+será implementada nas próximas etapas.
 
 ## Requisitos e instalação
 
@@ -34,11 +35,18 @@ data/
     ocorrencias_exemplo.csv # Dados de entrada para a demonstração
 src/pontoalerta/
     __init__.py
+    __main__.py             # Execução com python -m pontoalerta
+    cli.py                  # Interface pelo terminal
+    distancia.py            # Distância euclidiana
     ocorrencia.py           # Modelo e validações dos registros
     leitura_csv.py          # Carregamento e validação do CSV
+    par_proximo.py          # Algoritmo de divisão e conquista
 tests/
+    test_cli.py
+    test_distancia.py
     test_ocorrencia.py
     test_leitura_csv.py
+    test_par_proximo.py
 pyproject.toml              # Pacote, dependências e configuração do Pytest
 ```
 
@@ -92,6 +100,42 @@ três categorias, incluindo pares próximos para as próximas etapas.
 - Cabeçalhos, registros e formatação inválidos geram `ValueError`. Erros nos
   registros indicam a linha do arquivo e interrompem a carga, sem retorno parcial.
 - Erros de acesso ao arquivo, como `FileNotFoundError`, são propagados.
+
+## Execução pelo terminal
+
+Com o ambiente virtual ativo e o pacote instalado:
+
+```bash
+pontoalerta data/ocorrencias_exemplo.csv --categoria "buraco"
+```
+
+Também é possível executar como módulo, usando `-c` como abreviação:
+
+```bash
+python -m pontoalerta data/ocorrencias_exemplo.csv -c "descarte irregular de lixo"
+```
+
+O caminho do CSV e a categoria são obrigatórios. A categoria deve corresponder
+ao campo `Tipo`, respeitando letras maiúsculas e minúsculas. Use aspas em nomes
+de categorias ou caminhos com espaços. São necessárias pelo menos duas
+ocorrências da categoria selecionada.
+
+A saída apresenta a categoria, os IDs e as coordenadas dos dois registros mais
+próximos, além da distância euclidiana, na mesma unidade das coordenadas.
+Por exemplo, para a categoria `buraco`:
+
+```text
+Categoria: buraco
+Pontos mais próximos:
+  ID=001 | X=10.5 | Y=-3.0
+  ID=002 | X=11.0 | Y=-3.2
+Distância: 0.5385164807134505
+```
+
+Consulte `pontoalerta --help` para ver os argumentos. O programa retorna código
+`0` em caso de sucesso, `1` para erros de arquivo ou dados (exibidos em stderr)
+e `2` para argumentos ausentes ou incorretos. Se o pacote já estava instalado
+antes da adição deste comando, execute novamente `python -m pip install -e ".[dev]"`.
 
 ## Testes
 

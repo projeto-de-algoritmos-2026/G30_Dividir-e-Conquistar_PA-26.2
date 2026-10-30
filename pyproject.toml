@@ -16,6 +16,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=7.4,<10"]
 
+[project.scripts]
+pontoalerta = "pontoalerta.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
