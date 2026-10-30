@@ -1,5 +1,7 @@
 import math
 import random
+from itertools import combinations
+
 import pytest
 
 from pontoalerta import (
@@ -173,28 +175,92 @@ def test_propriedades_do_par_mais_proximo():
     assert resultado.eh_duplicata(limite_distancia=4.9) is False
 
 
-def test_equivalencia_com_forca_bruta_conjuntos_aleatorios():
-    """Valida o algoritmo de divisão e conquista contra a força bruta com sementes pseudoaleatórias."""
-    rng = random.Random(42)
+def _validar_com_calculo_exaustivo(pontos):
+    # A referência não usa funções do módulo, pois a recursão também usa força bruta.
+    distancia_esperada = min(
+        math.hypot(p2.x - p1.x, p2.y - p1.y)
+        for p1, p2 in combinations(pontos, 2)
+    )
 
-    for tamanho in (4, 10, 25, 60):
-        for _ in range(5):
-            pontos = [
-                Ocorrencia(
-                    id=f"pt_{i}",
-                    tipo="teste",
-                    x=rng.uniform(-100.0, 100.0),
-                    y=rng.uniform(-100.0, 100.0),
-                )
-                for i in range(tamanho)
-            ]
+    resultado = par_mais_proximo(pontos)
 
-            resultado_dc = par_mais_proximo(pontos)
-            resultado_fb = par_mais_proximo_forca_bruta(pontos)
+    assert resultado.distancia == pytest.approx(
+        distancia_esperada, rel=1e-12, abs=1e-12
+    )
+    assert resultado.ponto1 is not resultado.ponto2
+    assert any(resultado.ponto1 is ponto for ponto in pontos)
+    assert any(resultado.ponto2 is ponto for ponto in pontos)
+    # Em empates, qualquer par mínimo é válido, mas ele deve realizar a distância.
+    distancia_do_par = math.hypot(
+        resultado.ponto2.x - resultado.ponto1.x,
+        resultado.ponto2.y - resultado.ponto1.y,
+    )
+    assert distancia_do_par == pytest.approx(
+        distancia_esperada, rel=1e-12, abs=1e-12
+    )
 
-            assert math.isclose(
-                resultado_dc.distancia, resultado_fb.distancia, rel_tol=1e-9, abs_tol=1e-9
-            )
+
+@pytest.mark.parametrize("tamanho", [2, 3, 4, 5, 16, 31, 64, 257, 1024, 2048])
+@pytest.mark.parametrize("semente", [0, 42, 2026])
+def test_equivalencia_com_calculo_exaustivo_conjuntos_aleatorios(tamanho, semente):
+    rng = random.Random(semente)
+    pontos = [
+        Ocorrencia(
+            id=f"pt_{i}",
+            tipo="teste",
+            x=rng.uniform(-1000.0, 1000.0),
+            y=rng.uniform(-1000.0, 1000.0),
+        )
+        for i in range(tamanho)
+    ]
+
+    _validar_com_calculo_exaustivo(pontos)
+
+
+@pytest.mark.parametrize(
+    "coordenadas",
+    [
+        pytest.param(
+            [(-50, -80), (-20, -30), (-19.9, -30.2), (-8, -2), (-1, -100)],
+            id="apenas-coordenadas-negativas",
+        ),
+        pytest.param(
+            [(-10, -10), (-0.1, -0.1), (0.1, 0.1), (10, 10), (-10, 10), (10, -10)],
+            id="par-cruza-a-origem",
+        ),
+        pytest.param([(i * i - 128, -10) for i in range(17)], id="horizontal"),
+        pytest.param([(-10, i * i - 128) for i in range(17)], id="vertical"),
+        pytest.param([(i, 2 * i) for i in range(-16, 17)], id="colineares"),
+        pytest.param(
+            [(x, y) for x in range(-4, 4) for y in range(-4, 4)],
+            id="grade-com-empates",
+        ),
+        pytest.param(
+            [(-20, -20), (-10, -10), (0, -5), (0, -5), (10, 10), (20, 20)],
+            id="duplicados-em-metades-distintas",
+        ),
+        pytest.param([(2, -3)] * 16, id="todos-coincidentes"),
+        pytest.param(
+            [(-10, -10), (-10, -10), (0, 0), (5, 5), (5, 5), (20, 20)],
+            id="multiplos-pares-duplicados",
+        ),
+        pytest.param(
+            [
+                (-10, -40), (-9, -10), (-0.001, 0), (-0.0005, 15),
+                (0.0005, 15.0001), (0.001, 0.01), (9, 10), (10, 40),
+            ],
+            id="par-minimo-na-faixa-central",
+        ),
+    ],
+)
+def test_equivalencia_com_calculo_exaustivo_casos_especiais(coordenadas):
+    pontos = [
+        Ocorrencia(id=str(i), tipo="teste", x=x, y=y)
+        for i, (x, y) in enumerate(coordenadas)
+    ]
+    random.Random(42).shuffle(pontos)
+
+    _validar_com_calculo_exaustivo(pontos)
 
 
 def test_par_mais_proximo_arquivo_exemplo_csv():
