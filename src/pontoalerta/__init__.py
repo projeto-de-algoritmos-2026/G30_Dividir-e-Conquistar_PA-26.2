@@ -8,6 +8,8 @@ from .par_proximo import (
     dividir_ordenado_y,
     dividir_pontos,
     ordenar_pontos_x_e_y,
+    par_mais_proximo,
+    par_mais_proximo_faixa,
     par_mais_proximo_forca_bruta,
 )
 
@@ -19,5 +21,7 @@ __all__ = [
     "dividir_ordenado_y",
     "dividir_pontos",
     "ordenar_pontos_x_e_y",
+    "par_mais_proximo",
+    "par_mais_proximo_faixa",
     "par_mais_proximo_forca_bruta",
 ]
