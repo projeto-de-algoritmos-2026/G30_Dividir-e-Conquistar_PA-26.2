@@ -4,6 +4,8 @@ from pathlib import Path
 import streamlit as st
 
 from pontoalerta.leitura_csv import carregar_ocorrencias_csv
+from pontoalerta.par_proximo import par_mais_proximo
+from pontoalerta.visualizacao import criar_grafico_ocorrencias
 
 
 def carregar_dados(arquivo_upload, usar_exemplo: bool):
@@ -41,7 +43,6 @@ def main() -> None:
         """
     )
 
-    # Organização dos componentes em barra lateral e área principal
     with st.sidebar:
         st.header("📂 Dados de Entrada")
         arquivo_upload = st.file_uploader(
@@ -52,6 +53,16 @@ def main() -> None:
         usar_exemplo = st.checkbox(
             "Usar dados de exemplo (data/ocorrencias_exemplo.csv)",
             value=arquivo_upload is None,
+        )
+
+        st.header("⚙️ Configurações")
+        limite_duplicacao = st.number_input(
+            "Limite de distância para indicação de duplicação:",
+            min_value=0.0,
+            value=1.0,
+            step=0.1,
+            format="%.2f",
+            help="Pares com distância menor ou igual a este limite serão sinalizados como possíveis duplicações.",
         )
 
     ocorrencias, origem = carregar_dados(arquivo_upload, usar_exemplo)
@@ -85,6 +96,42 @@ def main() -> None:
     if not executar:
         st.info("Clique em **Executar Análise** para calcular o par de pontos mais próximos.")
         return
+
+    if len(ocorrencias_filtradas) < 2:
+        st.error(
+            f"A categoria '{categoria_selecionada}' possui apenas {len(ocorrencias_filtradas)} ocorrência(s). "
+            "São necessárias pelo menos 2 ocorrências para calcular o par mais próximo."
+        )
+        return
+
+    with st.spinner("Executando algoritmo de Divisão e Conquista..."):
+        resultado = par_mais_proximo(ocorrencias_filtradas)
+
+    p1, p2 = resultado.par
+
+    st.subheader("📊 Resultados da Análise")
+    col_m1, col_m2, col_m3 = st.columns(3)
+    with col_m1:
+        st.metric("Distância Calculada", f"{resultado.distancia:.4f}")
+    with col_m2:
+        st.metric("Ponto 1", f"ID {p1.id}", f"({p1.x}, {p1.y})")
+    with col_m3:
+        st.metric("Ponto 2", f"ID {p2.id}", f"({p2.x}, {p2.y})")
+
+    if resultado.eh_duplicata(limite_duplicacao):
+        st.warning(
+            f"⚠️ **Possível duplicação detectada!** A distância mínima ({resultado.distancia:.4f}) "
+            f"é menor ou igual ao limite configurado ({limite_duplicacao:.4f})."
+        )
+    else:
+        st.success(
+            f"✅ **Nenhuma duplicação detectada.** A distância mínima ({resultado.distancia:.4f}) "
+            f"está acima do limite de duplicação ({limite_duplicacao:.4f})."
+        )
+
+    st.subheader("📈 Visualização no Plano Cartesiano")
+    figura = criar_grafico_ocorrencias(ocorrencias_filtradas, resultado)
+    st.pyplot(figura)
 
 
 if __name__ == "__main__":
