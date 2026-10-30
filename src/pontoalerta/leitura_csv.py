@@ -1,18 +1,38 @@
 """Carregamento de ocorrências a partir de arquivos CSV."""
 
 import csv
+import io
+from contextlib import nullcontext
 from pathlib import Path
+from typing import Any
 
 from .ocorrencia import Ocorrencia
 
 
-def carregar_ocorrencias_csv(caminho: str | Path) -> list[Ocorrencia]:
+def carregar_ocorrencias_csv(
+    origem: str | Path | io.StringIO | io.TextIOBase | Any,
+) -> list[Ocorrencia]:
     """Leia um CSV UTF-8 com as colunas ID, Tipo, X e Y, em qualquer ordem.
 
+    Aceita caminho textual, pathlib.Path, buffer de texto ou UploadedFile do Streamlit.
     Dados inválidos geram ValueError, sem retornar uma lista parcial.
     Erros de acesso ao arquivo são propagados ao chamador.
     """
-    with Path(caminho).open(encoding="utf-8-sig", newline="") as arquivo:
+    if isinstance(origem, (str, Path)):
+        contexto = Path(origem).open(encoding="utf-8-sig", newline="")
+    elif isinstance(origem, (io.StringIO, io.TextIOBase)):
+        contexto = nullcontext(origem)
+    elif hasattr(origem, "getvalue"):
+        valor = origem.getvalue()
+        if isinstance(valor, bytes):
+            texto = valor.decode("utf-8-sig")
+        else:
+            texto = str(valor)
+        contexto = nullcontext(io.StringIO(texto))
+    else:
+        raise TypeError(f"Origem inválida para leitura de CSV: {type(origem).__name__}")
+
+    with contexto as arquivo:
         leitor = csv.DictReader(arquivo, strict=True)
         try:
             cabecalho = leitor.fieldnames
