@@ -31,9 +31,9 @@ def test_exibe_par_e_distancia_apenas_da_categoria_selecionada(caminho_csv, caps
 @pytest.mark.parametrize(
     "categoria, ids, distancia",
     [
-        ("buraco", ("001", "002"), 0.5385164807134504),
-        ("vazamento", ("004", "005"), 0.3605551275463989),
-        ("descarte irregular de lixo", ("007", "008"), 0.223606797749979),
+        ("buraco", ("001", "002"), 6.0),
+        ("vazamento", ("004", "005"), 6.0),
+        ("descarte irregular de lixo", ("007", "008"), 7.0),
     ],
 )
 def test_analisa_categorias_do_csv_de_exemplo(categoria, ids, distancia, capsys):

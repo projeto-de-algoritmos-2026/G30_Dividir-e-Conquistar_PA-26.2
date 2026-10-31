@@ -271,7 +271,7 @@ def test_par_mais_proximo_arquivo_exemplo_csv():
     assert {res_buraco.ponto1.id, res_buraco.ponto2.id} == {"001", "002"}
     assert math.isclose(
         res_buraco.distancia,
-        distancia_euclidiana((10.5, -3.0), (11.0, -3.2)),
+        distancia_euclidiana((10.5, -3.0), (16.5, -3.0)),
     )
 
     res_vazamento = par_mais_proximo(ocorrencias, categoria="vazamento")

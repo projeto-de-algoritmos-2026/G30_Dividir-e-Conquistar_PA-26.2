@@ -23,6 +23,7 @@ def test_app_carrega_dados_de_exemplo_e_mostra_categorias():
 
 def test_app_executa_analise_com_sucesso():
     app = AppTest.from_file(CAMINHO_APP).run()
+    app.number_input[0].set_value(6.0)
     # Clica no botão de executar
     app.button[0].click().run()
     assert not app.exception
@@ -33,15 +34,16 @@ def test_app_executa_analise_com_sucesso():
     assert "Ponto 1" in metricas
     assert "Ponto 2" in metricas
 
-    # Distância para buraco é ~0.5385, com limite padrão 1.0 deve alertar duplicação
+    assert app.metric[0].value == "6.0000"
+    # A distância igual ao limite também deve sinalizar possível duplicação.
     assert any("Possível duplicação detectada" in w.value for w in app.warning)
 
 
 def test_app_alerta_quando_distancia_supera_limite():
     app = AppTest.from_file(CAMINHO_APP).run()
-    # Altera limite para 0.1 (menor que a distância 0.5385)
-    app.number_input[0].set_value(0.1).run()
+    # O limite padrão de 1.0 é menor que a distância de 6.0 do exemplo.
     app.button[0].click().run()
     assert not app.exception
 
     assert any("Nenhuma duplicação detectada" in s.value for s in app.success)
+    assert not app.warning

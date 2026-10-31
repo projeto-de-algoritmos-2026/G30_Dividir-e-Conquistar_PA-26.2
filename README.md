@@ -125,7 +125,7 @@ print(ocorrencias[0])
 
 A função aceita um caminho textual, `pathlib.Path`, buffer de texto ou arquivo
 enviado pelo Streamlit e retorna uma lista de objetos `Ocorrencia`, na ordem do
-arquivo. O exemplo contém nove registros em três categorias, incluindo pares
+arquivo. O exemplo contém 60 registros, sendo 20 por categoria, incluindo pares
 próximos para demonstrar a análise.
 
 - Use UTF-8 (com ou sem BOM), vírgula como separador e ponto decimal.
@@ -166,8 +166,8 @@ Por exemplo, para a categoria `buraco`:
 Categoria: buraco
 Pontos mais próximos:
   ID=001 | X=10.5 | Y=-3.0
-  ID=002 | X=11.0 | Y=-3.2
-Distância: 0.5385164807134505
+  ID=002 | X=16.5 | Y=-3.0
+Distância: 6.0
 ```
 
 Consulte `pontoalerta --help` para ver os argumentos. O programa retorna código
@@ -198,7 +198,8 @@ Execute o comando na raiz para que a aplicação encontre
 Se a distância for menor ou igual ao limite, a interface sinaliza uma possível
 duplicação; caso contrário, informa que a distância mínima supera o limite.
 Com os dados de exemplo, a categoria `buraco` retorna os IDs `001` e `002`, com
-distância aproximada de `0.5385`, e gera o alerta para o limite padrão `1.0`.
+distância de `6.0`. Para demonstrar o alerta, ajuste o limite para `6.0` ou mais;
+com o limite padrão de `1.0`, esse par não é sinalizado como possível duplicação.
 Essa indicação depende da distância e não confirma que os registros representam
 a mesma ocorrência. Para encerrar o servidor, pressione `Ctrl+C` no terminal.
 
