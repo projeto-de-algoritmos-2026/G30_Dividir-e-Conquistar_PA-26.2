@@ -104,6 +104,7 @@ tests/
     test_benchmark.py
     test_cli.py
     test_distancia.py
+    test_integracao.py
     test_ocorrencia.py
     test_leitura_csv.py
     test_par_proximo.py
@@ -255,3 +256,14 @@ Com o ambiente virtual ativo e as dependências instaladas:
 ```bash
 python -m pytest
 ```
+
+Para executar apenas os testes de integração:
+
+```bash
+python -m pytest tests/test_integracao.py
+```
+
+Eles percorrem o fluxo de CSV até os resultados e gráficos no terminal e no
+Streamlit, incluindo entradas inválidas, casos extremos e mudanças de categoria
+e limite. O terminal é executado em um processo separado; o Streamlit usa
+`AppTest`, simulando apenas a entrega do arquivo pelo widget de upload.
