@@ -1,10 +1,61 @@
 ID,Tipo,X,Y
 001,buraco,10.5,-3.0
-002,buraco,11.0,-3.2
+002,buraco,16.5,-3.0
 003,buraco,30.0,20.0
 004,vazamento,25.0,12.0
-005,vazamento,25.3,12.2
+005,vazamento,31.0,12.0
 006,vazamento,-8.0,4.0
 007,descarte irregular de lixo,5.0,6.0
-008,descarte irregular de lixo,5.2,6.1
+008,descarte irregular de lixo,12.0,6.0
 009,descarte irregular de lixo,-15.0,-10.0
+010,buraco,-46.5,-42.0
+011,buraco,-28.0,-46.0
+012,buraco,-8.5,-35.0
+013,buraco,14.0,-44.5
+014,buraco,37.5,-38.0
+015,buraco,-42.0,-18.5
+016,buraco,-22.0,-9.0
+017,buraco,3.0,-17.0
+018,buraco,45.0,-12.0
+019,buraco,-49.0,9.0
+020,buraco,-30.0,28.0
+021,buraco,0.0,32.0
+022,buraco,20.0,43.0
+023,buraco,46.0,35.0
+024,buraco,-41.0,47.0
+025,buraco,-12.0,49.0
+026,buraco,48.0,4.0
+027,vazamento,-48.0,-33.0
+028,vazamento,-33.0,-49.0
+029,vazamento,-12.0,-24.0
+030,vazamento,8.0,-48.0
+031,vazamento,31.0,-28.0
+032,vazamento,-39.0,-6.0
+033,vazamento,-18.0,19.0
+034,vazamento,5.0,-12.0
+035,vazamento,48.0,-5.0
+036,vazamento,-46.0,28.0
+037,vazamento,-25.0,42.0
+038,vazamento,2.0,49.0
+039,vazamento,19.0,31.0
+040,vazamento,43.0,21.0
+041,vazamento,-6.0,33.0
+042,vazamento,37.0,48.0
+043,vazamento,46.0,-47.0
+044,descarte irregular de lixo,-45.0,-47.0
+045,descarte irregular de lixo,-25.0,-32.0
+046,descarte irregular de lixo,-4.0,-46.0
+047,descarte irregular de lixo,19.0,-35.0
+048,descarte irregular de lixo,48.0,-26.0
+049,descarte irregular de lixo,-34.0,-15.0
+050,descarte irregular de lixo,-49.0,3.0
+051,descarte irregular de lixo,1.0,-19.0
+052,descarte irregular de lixo,36.0,-8.0
+053,descarte irregular de lixo,-43.0,21.0
+054,descarte irregular de lixo,-23.0,34.0
+055,descarte irregular de lixo,-3.0,44.0
+056,descarte irregular de lixo,16.0,24.0
+057,descarte irregular de lixo,32.0,42.0
+058,descarte irregular de lixo,49.0,13.0
+059,descarte irregular de lixo,-37.0,49.0
+060,descarte irregular de lixo,43.0,-49.0
