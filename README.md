@@ -1,5 +1,20 @@
 # PontoAlerta
 
+**Número da Lista:** 2<br>
+**Conteúdo da Disciplina:** Dividir e Conquistar
+
+## Alunos
+
+| Matrícula | Aluno |
+| -- | -- |
+| 23/1011838 | Tiago Antunes Balieiro |
+| 23/1026714 | Euller Júlio da Silva |
+
+## Apresentação do trabalho
+[Link para o vídeo de apresentação](https://youtu.be/)
+
+## Sobre
+
 Projeto de Dividir e Conquistar para identificar possíveis registros duplicados
 de ocorrências urbanas de uma mesma categoria, a partir de coordenadas no plano.
 
