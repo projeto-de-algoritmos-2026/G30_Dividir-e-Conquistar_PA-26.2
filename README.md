@@ -1,8 +1,5 @@
 # PontoAlerta
 
-**Número da Lista:** 2<br>
-**Conteúdo da Disciplina:** Dividir e Conquistar
-
 ## Alunos
 
 | Matrícula | Aluno |
@@ -11,7 +8,7 @@
 | 23/1026714 | Euller Júlio da Silva |
 
 ## Apresentação do trabalho
-[Link para o vídeo de apresentação](https://youtu.be/)
+[Link para o vídeo de apresentação](https://youtu.be/in_LvNy4ga0)
 
 ## Sobre
 
